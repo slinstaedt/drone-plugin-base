@@ -30,8 +30,6 @@ for _kv in $(env); do
     case $_key in $_filter*)
         _key=$($_case ${_key#$_filter})
         _params="$_params $(echo "$_format" | k=$_key v=$_val envsubst)"
-        #_params="$_params ${_prefix}$($_case $_key)${_val:+$_assign}${_val:+$_quote}${_val}${_val:+$_quote}"
-        #env | grep -q "^$_key=" || export $_key="$_val"
     esac
 done
 
