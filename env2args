@@ -2,6 +2,7 @@
 set -euo pipefail
 
 function noop {
+    echo
 }
 function asis {
     echo $1
