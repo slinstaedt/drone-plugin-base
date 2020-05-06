@@ -1,6 +1,8 @@
 #!/bin/sh
 set -euo pipefail
 
+function noop {
+}
 function asis {
     echo $1
 }
