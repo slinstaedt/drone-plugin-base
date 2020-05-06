@@ -1,0 +1,38 @@
+#!/bin/sh
+set -euo pipefail
+
+function asis {
+    echo $1
+}
+function camel {
+    echo $(snake $1) | awk -F _ '{printf "%s", $1; for(i=2; i<=NF; i++) printf "%s", toupper(substr($i,1,1)) substr($i,2); print"";}'
+}
+function dot {
+    echo $(snake $1) | tr '_' '.'
+}
+function kebab {
+    echo $(snake $1) | tr '_' '-'
+}
+function snake {
+    echo $1 | tr '[:upper:]' '[:lower:]'
+}
+
+# echo key val | awk '{printf "%1$s %2$s %1$s\n", $k, $v}'
+_case=${1:-"asis"}
+_format=${2:-'$k="$v"'}
+_filter=${3:-"PLUGIN_"}
+
+_params=""
+IFS=$'\n'
+for _kv in $(env); do
+    _key=$(echo "$_kv" | cut -d '=' -f 1)
+    _val="$(echo "$_kv" | cut -d '=' -f 2)"
+    case $_key in $_filter*)
+        _key=$($_case ${_key#$_filter})
+        _params="$_params $(echo "$_format" | k=$_key v=$_val envsubst)"
+        #_params="$_params ${_prefix}$($_case $_key)${_val:+$_assign}${_val:+$_quote}${_val}${_val:+$_quote}"
+        #env | grep -q "^$_key=" || export $_key="$_val"
+    esac
+done
+
+echo "$_params"
