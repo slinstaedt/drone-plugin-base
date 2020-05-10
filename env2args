@@ -22,18 +22,18 @@ function snake {
 
 # echo key val | awk '{printf "%1$s %2$s %1$s\n", $k, $v}'
 _case=${1:-"asis"}
-_format=${2:-'$k=$v'}
+_format=${2:-'$k='"'"'$v'"'"}
 _filter=${3:-"PLUGIN_"}
 
 _params=""
 IFS=$'\n'
-for _kv in $(env); do
-    _key=$(echo "$_kv" | cut -d '=' -f 1)
-    _val="$(echo "$_kv" | cut -d '=' -f 2)"
+for _key in $(export | sed -nr 's/export ([A-Z0-9_]+)='"'"'.+/\1/p'); do
+    eval "_val=\"\$$_key\""
     case $_key in $_filter*)
         _key=$($_case ${_key#$_filter})
-        _params="$_params $(echo "$_format" | k=$_key v=$_val envsubst)"
+        _params="$_params $(echo "$_format" | k="$_key" v="$_val" envsubst)"
     esac
 done
 
-echo "$_params"
+printf "$_params"
+# eval "$(env2args asis 'export $k='"'"'$v'"'\n")"
