@@ -20,7 +20,6 @@ function snake {
     echo $1 | tr '[:upper:]' '[:lower:]'
 }
 
-# echo key val | awk '{printf "%1$s %2$s %1$s\n", $k, $v}'
 _case=${1:-"asis"}
 _format=${2:-'$k=$v'}
 _filter=${3:-"PLUGIN_"}
