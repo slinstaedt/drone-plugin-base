@@ -10,6 +10,10 @@ function asis {
 function camel {
     echo $(snake $1) | awk -F _ '{printf "%s", $1; for(i=2; i<=NF; i++) printf "%s", toupper(substr($i,1,1)) substr($i,2); print"";}'
 }
+function pascal {
+    _tmp="$(camel $1)"
+    echo "$(echo ${_tmp:0:1} | tr '[:lower:]' '[:upper:]')${_tmp:1}"
+}
 function dot {
     echo $(snake $1) | tr '_' '.'
 }
