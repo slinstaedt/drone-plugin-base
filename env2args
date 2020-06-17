@@ -29,14 +29,17 @@ _format=${2:-'$k=$v'}
 _filter=${3:-"PLUGIN_"}
 
 _params=""
-IFS=$'\n'
+#IFS=$'\n'
 for _key in $(export | sed -nr 's/export ([A-Z0-9_]+)='"'"'.+/\1/p'); do
     eval "_val=\"\$$_key\""
     case $_key in $_filter*)
         _key=$($_case ${_key#$_filter})
+        test "${_val:0:1}" = "$" && eval _val="$_val"
         _params="$_params $(echo "$_format" | k="$_key" v="$_val" envsubst)"
     esac
 done
 
 printf "$_params"
-# eval "$(env2args asis 'export $k='"'"'$v'"'\n")"
+# export PLUGIN_AAA="$(cat /etc/issue)"
+# export PLUGIN_XXX_YYY='$HOME'
+# env2args asis 'export $k='"'"'$v'"'\n"
